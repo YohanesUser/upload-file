@@ -107,8 +107,8 @@
     Klik atau Drag & Drop file ke sini
   </label>
 
-  <input type="file" id="fileInput" accept="image/*,video/*" multiple
-         style="display:none;" />
+  <input type="file" id="fileInput" multiple style="display:none;" />
+
 
   <p style="font-size:12px; color:#6b7280; margin-top:6px;">
     Format: semua file bisa. Maks 100MB
@@ -244,7 +244,8 @@ document.getElementById("entryForm").addEventListener("submit", async function(e
   const scriptUrl = "https://script.google.com/macros/s/AKfycbx-EQqV8YdWCVPuPuwoiWyX2FkT8WsFiDSS6dF6JMAuAP-gOYV9L-L6-keMdJE8eOQl/exec";
 
   let fileInput = document.getElementById("fileInput");
-  let files = fileInput.files;
+  let files = window.selectedFiles || document.getElementById("fileInput").files;
+
 
   if (files.length === 0) {
     alert("Pilih file dulu ya!");
@@ -257,8 +258,16 @@ document.getElementById("entryForm").addEventListener("submit", async function(e
 
   let uploadedLinks = [];
 
+
   for (let i = 0; i < files.length; i++) {
     let file = files[i];
+
+// validasi ukuran 100MB
+if (file.size > 100 * 1024 * 1024) {
+  alert("File " + file.name + " terlalu besar (maks 100MB).");
+  continue;
+}
+
 
     // ubah file jadi base64
     let base64Data = await new Promise((resolve, reject) => {
