@@ -189,7 +189,7 @@
   document.addEventListener('DOMContentLoaded', () => {
     const btn = document.getElementById('downloadBtn');
     btn.addEventListener('click', () => {
-      window.open('https://docs.google.com/spreadsheets/d/1uwXXhTkv3mQEK-Uu66x_kXr-kRyF2Blc97DOPagX4Aw/edit?usp=sharing', '_blank');
+      window.open('https://docs.google.com/spreadsheets/d/1OZnU48cwJUiu53t_3spkmap_LFrFsAnSETj2K4ODMTc/edit?usp=sharing', '_blank');
     });
   });
 </script>
@@ -209,9 +209,22 @@
                     </div>
                 </section>
             </div>
+            <!-- Counter Visitor -->
+<div style="width: 100%; text-align: center; margin: 20px 0;">
+  <script type="text/javascript" src="https://www.free-counters.org/count/ilbv"></script>
+  <br>
+  <a href="https://www.acadoo.de/" target="_blank" rel="noopener">acadoo</a>
+  <script type="text/javascript" src="https://whomania.com/ctr?id=e73be34504d2d123faee7a71d6a4e2b3c06b56cc"></script>
+</div>
 
-            <footer class="mt-10 text-center text-sm text-gray-600">© 2025 Situs Kirim File — dibuat untuk Menyimpan File. Tema: Kanutan 🇮🇩 YOHANES ALFARO S</footer>
-             <footer class="mt-10 text-center text-sm text-gray-600">Versi: 1.1</footer>
+
+            <<footer class="mt-10 text-center text-sm text-white">
+  © 2025 Situs Kirim File — dibuat untuk Menyimpan File. Tema: Kanutan 🇮🇩 YOHANES ALFARO S
+</footer>
+<footer class="mt-2 text-center text-sm text-white">
+  Versi: 1.1
+</footer>
+
         </div>
     </div>
 
@@ -219,7 +232,7 @@
 document.getElementById("entryForm").addEventListener("submit", async function(e) {
   e.preventDefault();
 
-  const scriptUrl = "https://script.google.com/macros/s/AKfycbzk2N1RZEL99VKfsbMHLQuHhhN0EB2GEC6wN0bMk3S5g7wi2cCmVMOcCuAyP5Fxh90u/exec";
+  const scriptUrl = "https://script.google.com/macros/s/AKfycbx-EQqV8YdWCVPuPuwoiWyX2FkT8WsFiDSS6dF6JMAuAP-gOYV9L-L6-keMdJE8eOQl/exec";
 
   let fileInput = document.getElementById("fileInput");
   let files = fileInput.files;
@@ -233,11 +246,12 @@ document.getElementById("entryForm").addEventListener("submit", async function(e
   const kelas = document.getElementById("kelas").value;
   const deskripsi = document.getElementById("desc").value;
 
-  let uploadedLinks = []; // simpan link dari server
+  let uploadedLinks = [];
 
   for (let i = 0; i < files.length; i++) {
     let file = files[i];
 
+    // ubah file jadi base64
     let base64Data = await new Promise((resolve, reject) => {
       let reader = new FileReader();
       reader.onload = () => resolve(reader.result.split(',')[1]);
@@ -245,18 +259,22 @@ document.getElementById("entryForm").addEventListener("submit", async function(e
       reader.readAsDataURL(file);
     });
 
-    let formData = new FormData();
-    formData.append("nama", nama);
-    formData.append("kelas", kelas);
-    formData.append("deskripsi", deskripsi);
-    formData.append("file", base64Data);
-    formData.append("filename", file.name);
-    formData.append("mimeType", file.type);
+    // siapkan payload urlencoded
+    let payload = new URLSearchParams();
+    payload.append("nama", nama);
+    payload.append("kelas", kelas);
+    payload.append("deskripsi", deskripsi);
+    payload.append("file", base64Data);
+    payload.append("filename", file.name);
+    payload.append("mimeType", file.type);
 
     try {
       let response = await fetch(scriptUrl, {
         method: "POST",
-        body: formData
+        body: payload,
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded"
+        }
       });
 
       if (!response.ok) throw new Error("HTTP error " + response.status);
@@ -275,54 +293,24 @@ document.getElementById("entryForm").addEventListener("submit", async function(e
     }
   }
 
-  // simpan ke localStorage sebagai histori
   if (uploadedLinks.length > 0) {
     let entries = JSON.parse(localStorage.getItem("entries")) || [];
     entries.push({
       nama: nama,
       kelas: kelas,
       deskripsi: deskripsi,
-      files: uploadedLinks,   // simpan array link file
+      files: uploadedLinks,
       time: new Date().toLocaleString("id-ID")
     });
     localStorage.setItem("entries", JSON.stringify(entries));
-    updateGallery(); // refresh tampilan
+    updateGallery();
   }
 
   alert("Semua file berhasil diupload.");
 });
 </script>
-<script>
-function updateGallery() {
-  let container = document.getElementById("galleryContainer");
-  let entries = JSON.parse(localStorage.getItem("entries")) || [];
 
-  if (entries.length === 0) {
-    container.innerHTML = '<div id="emptyMessage" class="text-center py-12">Belum ada unggahan. Ajak temanmu ikut! 🎉</div>';
-  } else {
-    container.innerHTML = "";
-    entries.forEach(entry => {
-      let div = document.createElement("div");
-      div.className = "border rounded-lg p-4 mb-3 bg-gray-50";
-      div.innerHTML = `
-        <h4 class="font-bold text-red-700">${entry.nama} — ${entry.kelas}</h4>
-        <p class="text-sm text-gray-600">${entry.deskripsi || "(tanpa deskripsi)"}</p>
-        <div class="mt-2 space-y-1">
-          ${entry.files.map(link => `<a href="${link}" target="_blank" class="text-blue-600 underline text-sm">${link}</a>`).join("<br>")}
-        </div>
-        <div class="text-xs text-gray-500 mt-2">${entry.time}</div>
-      `;
-      container.appendChild(div);
-    });
-  }
 
-  // update jumlah
-  document.getElementById("entryCount").textContent = entries.length;
-}
-
-// load saat halaman dibuka
-document.addEventListener("DOMContentLoaded", updateGallery);
-</script>
 
 </body>
 </html>
