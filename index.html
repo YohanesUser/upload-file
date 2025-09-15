@@ -143,21 +143,30 @@
   // saat file dijatuhkan
   dropArea.addEventListener('drop', e => {
     e.preventDefault();
-    if (e.dataTransfer.files.length) {
-      fileInput.files = e.dataTransfer.files;
+    const files = e.dataTransfer.files;
 
+    if (files.length > 0) {
       // tampilkan nama file agar user yakin
-      let names = [...fileInput.files].map(f => f.name).join(", ");
-      dropArea.querySelector("p").textContent = "File terpilih: " + names + ", masukkan ulang jika ingin mengganti";
+      let names = [...files].map(f => f.name).join(", ");
+      dropArea.querySelector("p").textContent =
+        "File terpilih: " + names + ", masukkan ulang jika ingin mengganti";
+
+      // simpan ke variabel global supaya bisa dipakai di submit
+      window.selectedFiles = files;
     }
   });
 
   // kalau user pilih manual lewat klik
   fileInput.addEventListener('change', () => {
-    let names = [...fileInput.files].map(f => f.name).join(", ");
-    dropArea.querySelector("p").textContent = "File terpilih: " + names + ", masukkan ulang jika ingin mengganti";
+    const files = fileInput.files;
+    let names = [...files].map(f => f.name).join(", ");
+    dropArea.querySelector("p").textContent =
+      "File terpilih: " + names + ", masukkan ulang jika ingin mengganti";
+
+    window.selectedFiles = files;
   });
 </script>
+
 
 
 
