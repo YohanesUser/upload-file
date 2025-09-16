@@ -106,7 +106,7 @@ document.addEventListener("DOMContentLoaded", () => {
                             <div class="text-xs text-gray-600">${entry.kelas} · ${new Date(entry.createdAt).toLocaleString()}</div>
                         </div>
                         <div class="flex gap-2">
-                            <button class="text-xs px-2 py-1 rounded bg-red-100 text-red-700 delete-btn" data-id="${entry.id}">Hapus</button>
+                            <button class="text-xs px-2 py-1 rounded bg-red-100 text-red-700 delete-btn" data-id="${entry.id}">Hapus Histori</button>
                         </div>
                     </div>
                     ${entry.desc ? `<p class="mt-3 text-sm text-gray-700">${entry.desc}</p>` : ''}
@@ -144,7 +144,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const desc = descTextarea.value.trim();
 
         if (!name || !kelas || selectedFiles.length === 0) {
-            alert("Mohon isi nama, kelas, dan unggah setidaknya 1 foto/video.");
+            alert("Mohon isi nama, judul, dan unggah setidaknya 1 file.");
             return;
         }
 
@@ -170,7 +170,7 @@ document.addEventListener("DOMContentLoaded", () => {
         renderFilePreview();
 
         showTab('gallery');
-        alert("Karya berhasil diunggah dan disimpan!");
+        alert("File berhasil diunggah dan disimpan!");
     }
 
     function removeEntry(id) {
@@ -227,7 +227,7 @@ document.addEventListener("DOMContentLoaded", () => {
     galleryContainer.addEventListener("click", (e) => {
         if (e.target.classList.contains("delete-btn")) {
             const entryId = e.target.dataset.id;
-            if (confirm("Apakah Anda yakin ingin menghapus karya ini?")) {
+            if (confirm("Apakah Anda yakin ingin menghapus histori ini?")) {
                 removeEntry(entryId);
             }
         }
