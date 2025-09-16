@@ -144,7 +144,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const desc = descTextarea.value.trim();
 
         if (!name || !kelas || selectedFiles.length === 0) {
-            alert("Mohon isi nama, judul, dan unggah setidaknya 1 file.");
+            alert("Mohon tunggu sebentar, jika file tidak terkirim silahkan kirim ulang dengan tidak drop file...");
             return;
         }
 
